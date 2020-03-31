@@ -92,6 +92,8 @@ def main():
         elif tokens[0] == 'go':
             my_nodes = NODES
             my_time = None
+            if (len(tokens) == 2) and (tokens[1] == 'infinite'):
+                my_nodes = sys.maxsize
             if (len(tokens) == 3) and (tokens[1] == 'nodes'):
                 my_nodes = int(tokens[2])
             if (len(tokens) == 3) and (tokens[1] == 'movetime'):
@@ -122,7 +124,7 @@ def main():
 
 
             if my_time != None:
-                best, score = search.UCT_search(board, 1000000, net=nn, C=C, max_time=my_time, send=send)
+                best, score = search.UCT_search(board, sys.maxsize, net=nn, C=C, max_time=my_time, send=send)
             else:
                 best, score = search.UCT_search(board, my_nodes, net=nn, C=C, send=send)
             send("bestmove {}".format(best))
