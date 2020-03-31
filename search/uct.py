@@ -63,7 +63,7 @@ class UCTNode():
         current.number_visits += 1
 
 
-def UCT_search(board, num_reads, net=None, C=1.0, verbose=False, max_time=None, tree=None, send=None):
+def UCT_start_search(board, num_reads, net=None, C=1.0, verbose=False, max_time=None, tree=None, send=None):
     if max_time == None:
         # search for a maximum of an hour
         max_time = 3600.0
@@ -74,6 +74,7 @@ def UCT_search(board, num_reads, net=None, C=1.0, verbose=False, max_time=None, 
 
     root = UCTNode(board)
     for i in range(num_reads):
+        if not sys.stdin.isatty():
         count += 1
         leaf = root.select_leaf(C)
         child_priors, value_estimate = net.evaluate(leaf.board)
@@ -83,6 +84,12 @@ def UCT_search(board, num_reads, net=None, C=1.0, verbose=False, max_time=None, 
         delta = now - start
         if (time != None) and (delta > max_time):
             break
+        if not sys.stdin.isatty():
+            line = sys.stdin.readline().strip()
+            if (line == 'stop'):
+                break
+            if (line == 'quit'):
+                sys.exit()
 
     bestmove, node = max(root.children.items(), key=lambda item: (item[1].number_visits, item[1].Q()))
     score = int(round(cp(node.Q()),0))
