@@ -51,11 +51,11 @@ def process_position(tokens):
 
 
 
-def load_network():
+def load_network(cuda = False):
     log("Loading network")
 
-    #net = search.EPDLRUNet(search.BadGyalNet(cuda=True), CACHE_SIZE)
-    net = search.EPDLRUNet(search.MeanGirlNet(cuda=False), CACHE_SIZE)
+    #net = search.EPDLRUNet(search.BadGyalNet(cuda=cuda), CACHE_SIZE)
+    net = search.EPDLRUNet(search.MeanGirlNet(cuda=cuda), CACHE_SIZE)
     return net
 
 
@@ -64,7 +64,7 @@ def main():
     send("A0 Lite")
     board = chess.Board()
     nn = None
-
+    cuda = False
     while True:
         line = sys.stdin.readline()
         line = line.rstrip()
@@ -76,7 +76,11 @@ def main():
         if tokens[0] == "uci":
             send('id name A0 Lite')
             send('id author Dietrich Kappe')
+            send('option name cuda type check default false')        
             send('uciok')
+        elif tokens[0] == "setoption":
+            if tokens[2] == "cuda":
+                cuda = tokens[4] == 'true'                   
         elif tokens[0] == "quit":
             exit(0)
         elif tokens[0] == "isready":
@@ -120,7 +124,7 @@ def main():
                 if my_time < MINTIME:
                     my_time = MINTIME
             if nn == None:
-                nn = load_network()
+                nn = load_network(cuda)
 
 
             if my_time != None:
