@@ -75,7 +75,6 @@ def UCT_search(board, num_reads, net=None, C=1.0, verbose=False, max_time=None, 
 
     root = UCTNode(board)
     for i in range(num_reads):
-        if not sys.stdin.isatty():
         count += 1
         leaf = root.select_leaf(C)
         child_priors, value_estimate = net.evaluate(leaf.board)
