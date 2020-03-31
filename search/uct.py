@@ -70,6 +70,7 @@ def UCT_start_search(board, num_reads, net=None, C=1.0, verbose=False, max_time=
     max_time = max_time - 0.05
 
     start = time()
+    delta_last = 5
     count = 0
 
     root = UCTNode(board)
@@ -82,6 +83,10 @@ def UCT_start_search(board, num_reads, net=None, C=1.0, verbose=False, max_time=
         leaf.backup(value_estimate)
         now = time()
         delta = now - start
+        if (delta - delta_last > 5):
+            delta_last = delta
+            bestmove, node = max(root.children.items(), key=lambda item: (item[1].number_visits, item[1].Q()))
+            send("info depth 1 seldepth 1 score cp {} nodes {} nps {} pv {}".format(score, count, int(round(count/delta, 0)), bestmove))
         if (time != None) and (delta > max_time):
             break
         if not sys.stdin.isatty():
