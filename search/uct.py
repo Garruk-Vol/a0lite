@@ -63,7 +63,7 @@ class UCTNode():
         current.number_visits += 1
 
 
-def UCT_start_search(board, num_reads, net=None, C=1.0, verbose=False, max_time=None, tree=None, send=None):
+def UCT_search(board, num_reads, net=None, C=1.0, verbose=False, max_time=None, tree=None, send=None):
     if max_time == None:
         # search for a maximum of an hour
         max_time = 3600.0
